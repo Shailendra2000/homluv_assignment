@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  margin: 0;
+}
+header{
+    background-color:#f1f1f1 ;
+    display: flex;
+}
+ul {
+  list-style-type: none;
+  margin: 0 ;
+  padding: 0;
+  width: 25%;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+li{
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+li:hover{
+  background-color: #555;
+  color: white;
+}
+input[type="text"]{
+            border: none;
+            background-color: rgba(227, 35, 35, 0.226);
+            padding: 0.5rem .2rem;
+            border-radius: .2rem;
+            width: 25%;
+            display: block;
+            margin: 0 0 0 40%;
+}
+img{
+  height: 220px;
+  width: 240px;
+  border-radius: 20px;
+}
+.card{
+  display: flex;
+  overflow: hidden;
+  margin: 2% 2% 2% 30%;
+}
+ .card-content *{
+  padding-left: 15px;
+ }
+
+</style>
+</head>
+<body>
+<header>
+    <input type="text" id="search_bar" placeholder="Search">
+    <input type="submit"  onclick=search() placeholder="Search">
+</header>
+<ul>
+    <li class="sidebar__items" id="view all articles" >VIEW ALL ARTICLES</a></li>
+    <li class="sidebar__items" id="trends">TRENDS</li>
+    <li class="sidebar__items" id="advice">ADVICE</li>
+    <li class="sidebar__items" id="relationship">RELATIONSHIP</li>
+    <li class="sidebar__items" id="inspiration">INSPIRATION</li>
+    <li class="sidebar__items" id="lifestyle">LIFESTYLE</li>
+</ul>
+<div class="body-cont">
+</div>
+<input type="button" value="Show more" id="loadmore" style="margin-left: 35%;">
+<script src="homeluv.js"></script>
+</body>
+</html>
