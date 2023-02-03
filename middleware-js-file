@@ -15,6 +15,14 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.set("view engine", "ejs");
+class Model {
+    constructor(data) {
+        this.image = data.image;
+        this.title = data.title;
+        this.metaDescription = data.metaDescription;
+        this.author = data.author;
+    }
+}
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let url = `https://stage-api.homluv.com/api/nlc/`;
     let url2 = `/?pagesize=16&page=${req.query.page}`;
@@ -33,7 +41,10 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(url);
     const data = yield fetch(url);
     const dataa = yield data.json();
-    console.log(dataa.length);
-    res.json(dataa);
+    let data_to_send = [];
+    dataa.forEach((element) => {
+        data_to_send.push(new Model(element));
+    });
+    res.json(data_to_send);
 }));
 app.listen(1700);
