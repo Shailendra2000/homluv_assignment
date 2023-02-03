@@ -1,0 +1,87 @@
+let pagesize=16;
+let page=0;
+let clicked="view all articles"
+let container=document.getElementsByClassName("body-cont")[0];
+
+document.getElementById("loadmore").addEventListener('click',() => {
+    fetch_data(clicked);
+})
+window.onload=fetch_data("view all articles");
+
+async function search(){
+    let searched_data=document.getElementById("search_bar").value;
+    let data=await fetch(`http://127.0.0.1:1700/?pagesize=${pagesize}&page=${page}&search=${searched_data}`);
+    let json_data=await data.json();
+    clicked="s";
+    container.innerHTML="";
+    display_data(json_data);
+}
+
+async function fetch_data(type,new_data=0){
+    let data,json_data;
+    console.log(clicked);
+    if (new_data){
+        page=1;
+    }
+    else{
+        page+=1;
+    }
+    if(type=="view all articles"){
+        data=await fetch(`http://127.0.0.1:1700/?pagesize=${pagesize}&page=${page}`);
+        json_data=await data.json();
+    }
+    else{
+        data=await fetch(`http://127.0.0.1:1700/?pagesize=${pagesize}&page=${page}&category=${type}`);
+        json_data=await data.json();
+    }
+    display_data(json_data);
+}
+
+function display_data(json_data){
+    console.log(json_data.length);
+    button=document.getElementById("loadmore")
+    if (json_data.length<16){
+        button.style.display="none";
+    }
+    else{
+        button.style.display="";
+    }
+    for(i=0;i<json_data.length;i++){
+        let card=document.createElement("div");
+        card.className="card";
+        let image=document.createElement("img");
+        image.src=json_data[i].image;
+        image.alt="image";
+        let content=document.createElement("div");
+        content.className="card-content";
+        let title=document.createElement("h2");
+        let desc=document.createElement("p");
+        let author=document.createElement("p");
+        title.innerText=json_data[i].title;
+        author.innerText=json_data[i].metaDescription;
+        desc.innerText=json_data[i].author;
+        content.appendChild(title);
+        content.appendChild(desc);
+        content.appendChild(author);
+        card.appendChild(image);
+        card.appendChild(content);
+        container.appendChild(card);
+    }
+}
+
+const items = document.querySelectorAll(".sidebar__items");
+console.log(typeof items)
+items.forEach((item) => {
+    item.addEventListener("click", () => {
+        if (clicked!=item.innerText.toLowerCase()){
+            container.innerHTML="";
+            prev=document.getElementById(`${clicked}`);
+            clicked=item.innerText.toLowerCase();
+            item.style.background="#555";
+            item.style.color="white";
+            prev.style.color="black";
+            prev.style.background="#f1f1f1";
+            fetch_data(item.innerText.toLowerCase(),1);
+        }
+    })
+})
