@@ -21,6 +21,8 @@ class Model {
         this.title = data.title;
         this.metaDescription = data.metaDescription;
         this.author = data.author;
+        this.html = data.html;
+        this.images = data.images;
     }
 }
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,6 +43,7 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(url);
     const data = yield fetch(url);
     const dataa = yield data.json();
+    console.log(dataa);
     let data_to_send = [];
     dataa.forEach((element) => {
         data_to_send.push(new Model(element));
@@ -48,3 +51,4 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(data_to_send);
 }));
 app.listen(1700);
+
