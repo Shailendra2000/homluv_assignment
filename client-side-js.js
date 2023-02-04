@@ -2,10 +2,11 @@ let pagesize=16;
 let page=0;
 let clicked="view all articles"
 let container=document.getElementsByClassName("body-cont")[0];
-
-document.getElementById("loadmore").addEventListener('click',() => {
+let des_container=document.getElementById("desc");
+document.getElementById("loadmore").addEventListener('click',()=>{
     fetch_data(clicked);
-})
+});
+
 window.onload=fetch_data("view all articles");
 
 async function search(){
@@ -55,14 +56,54 @@ function display_data(json_data){
         let content=document.createElement("div");
         content.className="card-content";
         let title=document.createElement("h2");
-        let desc=document.createElement("p");
+        let mdesc=document.createElement("p");
         let author=document.createElement("p");
+        let description=document.createElement("div");
         title.innerText=json_data[i].title;
-        author.innerText=json_data[i].metaDescription;
-        desc.innerText=json_data[i].author;
+        author.innerText=json_data[i].author;
+        mdesc.innerText=json_data[i].metaDescription;
+        if(json_data[i].html){
+            description.innerHTML=json_data[i].html;
+        }
+        else{
+            json_data[i].images.forEach((item)=>{
+                let image_item=document.createElement("div");
+                let sub_title=document.createElement('h3');
+                sub_title.innerHTML=item.subTitle;
+                let sub_image=document.createElement('img');
+                imageurl=fix_image(item.image);
+                sub_image.src=imageurl;
+                let overlay_title=document.createElement('h4');
+                overlay_title.innerHTML=item.overlayTitle;
+                let overlay_area=document.createElement('div');
+                overlay_title.innerHTML=item.overlayAreaOne;
+                image_item.appendChild(sub_title);
+                image_item.appendChild(sub_image);
+                image_item.appendChild(overlay_title);
+                image_item.appendChild(overlay_area);
+                description.appendChild(image_item);
+            })
+        }
+        description.style.display="none";
+        title.addEventListener('click',()=>{
+            let back=document.createElement("button");
+            back.innerText="GO BACK";
+            back.style.display="block";
+            document.getElementById("loadmore").style.display="none";
+            back.addEventListener('click',()=>{
+                container.style.display='';
+                des_container.style.display='none';
+                document.getElementById("loadmore").style.display="";
+            })
+            des_container.innerHTML=title.innerHTML+description.innerHTML;
+            des_container.prepend(back);
+            container.style.display='none';
+            des_container.style.display='';
+        })
         content.appendChild(title);
-        content.appendChild(desc);
+        content.appendChild(mdesc);
         content.appendChild(author);
+        content.appendChild(description);
         card.appendChild(image);
         card.appendChild(content);
         container.appendChild(card);
@@ -85,3 +126,10 @@ items.forEach((item) => {
         }
     })
 })
+
+function fix_image(item){
+    let st=item.lastIndexOf("src");
+    st+=4;
+    let end=item.indexOf("?");
+    return item.slice(st+1,end);
+}
