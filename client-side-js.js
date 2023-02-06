@@ -2,7 +2,7 @@ let pagesize=16;
 let page=0;
 let clicked="view all articles"
 let container=document.getElementsByClassName("body-cont")[0];
-let des_container=document.getElementById("desc");
+let details_container=document.getElementById("desc");
 document.getElementById("loadmore").addEventListener('click',()=>{
     fetch_data(clicked);
 });
@@ -48,31 +48,37 @@ function display_data(json_data){
         button.style.display="";
     }
     for(i=0;i<json_data.length;i++){
-        let card=document.createElement("div");
+        let card=document.createElement("div");     //article container
         card.className="card";
-        let image=document.createElement("img");
+
+        let image=document.createElement("img");    //article image
         image.src=json_data[i].image;
-        image.alt="image";
-        let content=document.createElement("div");
+        
+        let content=document.createElement("div"); //about article div
         content.className="card-content";
+        
         let title=document.createElement("h2");
         let mdesc=document.createElement("p");
         let author=document.createElement("p");
-        let description=document.createElement("div");
+
         title.innerText=json_data[i].title;
         author.innerText=json_data[i].author;
         mdesc.innerText=json_data[i].metaDescription;
-        if(json_data[i].html){
-            description.innerHTML=json_data[i].html;
+
+        let details=document.createElement("div");  // article details div
+        details.style.display="none";
+
+        if(json_data[i].html){                        // if html is given in details of articles
+            details.innerHTML=json_data[i].html;    
         }
-        else{
-            json_data[i].images.forEach((item)=>{
-                let image_item=document.createElement("div");
+        else{                                         // if images are given in details of articles
+            json_data[i].images.forEach((item)=>{  
+                let image_item=document.createElement("div");  
                 let sub_title=document.createElement('h3');
                 sub_title.innerHTML=item.subTitle;
-                let sub_image=document.createElement('img');
-                imageurl=fix_image(item.image);
-                sub_image.src=imageurl;
+                let sub_image=document.createElement('div');
+                //console.log(item.image);
+                sub_image.innerHTML=item.image;
                 let overlay_title=document.createElement('h4');
                 overlay_title.innerHTML=item.overlayTitle;
                 let overlay_area=document.createElement('div');
@@ -81,31 +87,39 @@ function display_data(json_data){
                 image_item.appendChild(sub_image);
                 image_item.appendChild(overlay_title);
                 image_item.appendChild(overlay_area);
-                description.appendChild(image_item);
+                details.appendChild(image_item);
             })
         }
-        description.style.display="none";
-        title.addEventListener('click',()=>{
-            let back=document.createElement("button");
-            back.innerText="GO BACK";
-            back.style.display="block";
-            document.getElementById("loadmore").style.display="none";
-            back.addEventListener('click',()=>{
+        
+        
+        title.addEventListener('click',()=>{              // adding click to title of article to show details
+            let back_button=document.createElement("button");
+            back_button.innerText="GO BACK";
+            back_button.style.display="block";
+            
+            back_button.addEventListener('click',()=>{
                 container.style.display='';
-                des_container.style.display='none';
+                details_container.style.display='none';
                 document.getElementById("loadmore").style.display="";
             })
-            des_container.innerHTML=title.innerHTML+description.innerHTML;
-            des_container.prepend(back);
+
+            document.getElementById("loadmore").style.display="none";
+            details_container.innerHTML=details.innerHTML;
+            let heading=document.createElement("h2");
+            heading.innerHTML=title.innerHTML;
+            details_container.prepend(heading);
+            details_container.prepend(back_button);
             container.style.display='none';
-            des_container.style.display='';
+            details_container.style.display='';
         })
         content.appendChild(title);
         content.appendChild(mdesc);
         content.appendChild(author);
-        content.appendChild(description);
+        content.appendChild(details);
+
         card.appendChild(image);
         card.appendChild(content);
+
         container.appendChild(card);
     }
 }
@@ -126,10 +140,3 @@ items.forEach((item) => {
         }
     })
 })
-
-function fix_image(item){
-    let st=item.lastIndexOf("src");
-    st+=4;
-    let end=item.indexOf("?");
-    return item.slice(st+1,end);
-}
